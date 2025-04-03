@@ -1,0 +1,37 @@
+.activity-card{
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 470px);
+    gap: 25px;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.activity-card .card-item .title {
+    width: 100%;
+    font-size: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.activity-card .card-item .content,
+.activity-card .card-item .footer{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.edit {
+    position: fixed;
+    right: 100px;
+    bottom: 200px;
+}
+
+.el-popper .header {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 20px 0;
+}

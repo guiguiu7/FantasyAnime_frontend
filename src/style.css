@@ -1,0 +1,322 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    background: rgb(246, 246, 246);
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.page-header span {
+    font-size: 14px;
+}
+
+/* 首页版心 */
+.container {
+    width: 1300px;
+    margin: 0 auto;
+    font-size: 24px;
+
+}
+
+/*头部*/
+.page-header {
+    height: 70px;
+    background: rgba(243, 243, 243, 0.97);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-sizing: content-box;
+}
+
+.page-header .logo {
+    width: 100px;
+    height: 70px;
+    overflow: hidden;
+    background-image: url("/fantasy.svg");
+    margin-left: 10px;
+}
+
+.page-header .search {
+    width: 520px;
+    background: #e3e6ea;
+    display: flex;
+    transition: 0.2s linear;
+    border-radius: 10px;
+}
+
+.page-header .search > input {
+    width: 480px;
+    height: 40px;
+    padding: 0 0 0 5px;
+    box-sizing: border-box;
+    border-radius: 10px 0 0 10px;
+    font-size: 24px;
+    border: none;
+    opacity: 1;
+    outline: none;
+}
+
+.page-header .search > button {
+    height: 40px;
+    width: 40px;
+    background: center / contain url("/search.svg");
+    border: none;
+}
+
+.page-header .search:hover {
+    background: #fff;
+    box-shadow: 0 0 10px #939393;
+}
+
+.nav .header-nav {
+    height: 70px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    line-height: 70px;
+}
+
+.nav .header-nav img {
+    height: 30px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 25px;
+    align-self: center;
+    position: relative;
+    transition: all .35s;
+    z-index: 5;
+}
+
+.nav .header-nav .user {
+    height: 50px;
+    width: 30px;
+    position: relative;
+    margin-right: 10px;
+}
+
+.nav .header-nav .user:hover img {
+    transform: translate(50%, 45px) scale(3);
+    transition: all .35s;
+    z-index: 5;
+}
+
+.nav .header-nav .user:hover .popover-user {
+    width: 300px;
+    height: 400px;
+    padding-top: 50px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #939393;
+    top: 70px;
+    left: -120px;
+    transition: all .35s;
+    opacity: 1;
+    z-index: 4;
+    color: black;
+    visibility: unset;
+}
+
+.nav .header-nav .popover-user {
+    width: 300px;
+    height: 400px;
+    opacity: 0;
+    z-index: -1;
+    position: absolute;
+    top: 70px;
+    left: -120px;
+    transition: all .2s;
+    visibility: hidden;
+}
+.header-nav .popover-user .info {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+.header-nav .popover-user .info .name {
+    color: hotpink;
+    font-size: 35px;
+    font-weight: bold;
+}
+.popover-user .info .content {
+    display: flex;
+    flex-direction: column;
+    line-height: 35px;
+}
+.popover-user .info .content button:nth-of-type(1){
+    margin-top: 35px;
+}
+.popover-user .info .content button {
+    align-self: center;
+    margin-bottom: 10px;
+}
+.popover-user .info .footer {
+    position: absolute;
+    border-top: 1px gainsboro solid;
+    width: 100%;
+    bottom: 0;
+}
+.popover-user .info .content button,
+.popover-user .info .footer button {
+    font-size: 20px;
+    color: gray;
+    width: 80%;
+    height: 39px;
+    border: none;
+    border-radius: 5px;
+    background-color: white;
+    transition: .25s linear;
+}
+.popover-user .info .content button:hover,
+.popover-user .info .footer button:hover {
+    background-color: rgba(0,0,0,0.1);
+}
+
+.header-nav .popover-user .no-login span {
+    width: 100%;
+    display: block;
+    line-height: 20px;
+    color: gray;
+}
+.header-nav .popover-user .no-login pre {
+    all: unset;
+}
+.nav .header-nav .popover-user .no-login {
+    display: flex;
+    flex-direction: column;
+    align-content: start;
+    height: 100%;
+    line-height: 35px;
+    user-select: none;
+}
+
+.header-nav .popover-user .no-login .login {
+    border: none;
+    border-radius: 5px;
+    width: 150px;
+    height: 45px;
+    background: #00aeec;
+    color: white;
+    font-size: 20px;
+    margin: 20px 0;
+    font-weight: bolder;
+}
+
+
+.nav .header-nav .icon {
+    line-height: 10px;
+}
+
+/*通知弹出框*/
+:deep(.el-popper) {
+    width: 500px;
+}
+.el-popper .notice{
+    min-height: 200px;
+    max-height: 300px;
+    overflow: hidden;
+    overflow-y: auto;
+}
+.el-popper .notice .notice-item {
+    font-size: 20px;
+    text-wrap: none;
+    border-bottom: 1px gainsboro solid;
+    text-align: left;
+    padding: 7px 0;
+}
+
+/*.content::after{*/
+/*  content: '';*/
+/*  display: block;*/
+/*  flex: 1 1 auto;*/
+/*}*/
+
+
+.foot {
+    height: 70px;
+    background: beige;
+    line-height: 70px;
+}
+
+@media screen and (min-width: 1350px) {
+    .container {
+        width: 1500px;
+    }
+}
+#editor span {
+    all: unset;
+}
+
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+.login-pop{
+    width: 600px;
+    height: 350px;
+    border-radius: 10px;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}
+.login-pop .title {
+    margin: 35px 0;
+    user-select: none;
+}
+.login-pop .close {
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    width: 35px;
+    height: 35px;
+    background: url("/close.svg") no-repeat;
+    user-select: none;
+}
+.login-pop .el-form-item__label {
+    font-size: 16px;
+}
+.login-pop .operate {
+    display: flex;
+    justify-content: space-around;
+}
+.login-pop .operate button {
+    width: 160px;
+    height: 39px;
+    border-radius: 5px;
+}
+.login-pop .forget {
+    font-size: 13px;
+    justify-self: end;
+    color: #00aeec;
+    user-select: none;
+}
+.login-pop .operate .sign {
+    background: white;
+    border: 1px gainsboro solid;
+}
+.login-pop .operate .login {
+    background: #00aeec;
+    color: white;
+    border: none;
+}
+.login-pop .operate .sign-login {
+    width: 200px;
+    background: #00aeec;
+    color: white;
+    border: none;
+}

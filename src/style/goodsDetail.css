@@ -1,0 +1,92 @@
+.goodsDetail {
+    display: flex;
+    height: 85vh;
+}
+
+.goodsDetail .picture{
+    width: 40%;
+}
+.goodsDetail .picture img {
+    display: block;
+    margin: 0 auto;
+    align-items: center;
+}
+
+
+
+.goodsDetail .info{
+    width: 60%;
+    text-align: left;
+    padding: 10px;
+}
+
+.goodsDetail .info > div:nth-child(n+2) {
+    margin-top: 50px;
+}
+
+.goodsDetail .info .name {
+    font-size: 35px;
+    font-weight: bold;
+}
+.goodsDetail .info .price {
+    height: 41px;
+    display: flex;
+    background: rgb(255, 236, 241);
+    line-height: 41px;
+}
+.goodsDetail .info .price .label {
+    padding-left: 10px;
+    margin-right: 15px;
+    font-size: 20px;
+    color: gray;
+}
+.goodsDetail .info .price .content::before {
+    font-size: 20px;
+    content: "￥";
+    color: hotpink;
+}
+.goodsDetail .info .price .content {
+    font-size: 35px;
+    color: hotpink;
+}
+.goodsDetail .info .support ul{
+    width: 100%;
+    padding-left: 10px;
+    display: flex;
+}
+.goodsDetail .info .support ul li:first-child{
+    font-size: 20px;
+    color: gray;
+}
+.goodsDetail .info .support ul li {
+    all: unset;
+    display: block;
+    margin-right: 35px;
+    font-size: 20px;
+}
+
+.goodsDetail .store {
+    padding-left: 10px;
+}
+
+.goodsDetail .info .el-input-number {
+    margin-left: 10px;
+}
+
+.goodsDetail .info .button {
+    display: flex;
+}
+
+.goodsDetail .info .button .buy,
+.goodsDetail .info .button .cart{
+    width: 150px;
+    height: 50px;
+    display: block;
+    font-size: 25px;
+    color: white;
+    background: hotpink;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    user-select: none;
+}

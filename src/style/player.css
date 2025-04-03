@@ -1,0 +1,135 @@
+.title {
+    font-weight: bold;
+    text-align: left;
+    padding: 10px;
+}
+video {
+    width: 100%;
+    height: 100%;
+}
+.content .toolbar {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 20px;
+    background: white;
+}
+.content .toolbar .anime-like{
+    display: flex;
+    font-size: 20px;
+    user-select: none;
+}
+.player-list-title {
+    font-size: 25px;
+    text-align: left;
+}
+.player-list-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    line-height: 25px;
+}
+.number-episodes {
+    width: 100px;
+    height: 30px;
+    background: #e3e6ea;
+    border: 1px solid #939393;
+    border-radius: 5px;
+    cursor: pointer;
+    user-select: none;
+}
+.number-episodes:hover {
+    background: #939393;
+}
+
+.player-comment {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+.publish-comment {
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+.publish-comment .avatar{
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+.publish-comment textarea {
+    width: 100%;
+    font-size: 16px;
+}
+.publish-comment button {
+    width: 70px;
+    height: 32px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    background: #00aeec80;
+}
+.publish-comment button:hover {
+    background: #00aeec;
+}
+.player-comment-info {
+    text-align: left;
+    padding: 15px;
+}
+.player-comment .main {
+}
+.player-comment .user {
+    display: flex;
+    gap: 15px;
+}
+.player-comment .avatar {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+.player-comment .avatar img {
+    width: 100%;
+    height: 60px;
+    border-radius: 30px;
+    object-fit: cover;
+}
+.player-comment .main {
+    font-size: 18px;
+}
+.player-comment .main .name{
+    font-weight: bold;
+    color: hotpink;
+}
+.player-comment .main .content {
+    padding: 5px 0;
+}
+.player-comment .main .footer {
+    display: flex;
+    gap: 15px;
+}
+.player-comment .footer button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+.player-comment .footer .like {
+    display: flex;
+    align-items: center;
+}
+
+.player-comment .footer .like-num {
+    font-size: 15px;
+    color: #838383;
+}
+
+.player-comment .reply-box {
+    padding-top: 10px;
+    display: flex;
+    gap: 15px;
+}
+.player-comment .reply-box .avatar {
+    width: 35px;
+    height: 35px;
+}

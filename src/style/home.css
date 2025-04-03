@@ -1,0 +1,196 @@
+.recommend {
+    display: flex;
+    width: 100%;
+    gap: 15px;
+    justify-content: space-between;
+}
+
+.recommend .recommend-content {
+    width: 50%;
+    height: 100%;
+}
+
+.recommend-content .recommend-card {
+    display: grid;
+    justify-content: space-between;
+    gap: 60px 15px;
+    grid-template-columns: repeat(auto-fill, 230px);
+}
+
+.recommend-content .recommend-card .card-content {
+    height: 185px;
+    width: 100%;
+}
+
+.recommend-card .card-content img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.recommend-content .recommend-card .card-footer {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    background-color: white;
+}
+
+/*分类*/
+.header-category {
+    display: flex;
+    align-items: center;
+    position: sticky;
+    top: 70px;
+    background: rgba(245, 245, 245, 0.97);
+    z-index: 3;
+}
+
+.header-category span {
+    font-size: 14px;
+    color: gray;
+}
+
+.header-category .left {
+    margin-right: 20px;
+    width: 10%;
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-category .left a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30px;
+}
+
+.header-category .right {
+    width: 90%;
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 100px);
+    grid-gap: 15px;
+    align-content: center;
+    justify-content: space-between;
+}
+
+.header-category .right a {
+    display: block;
+    width: 100px;
+    height: 30px;
+    line-height: 30px;
+    background: #dcdcdc50;
+    border: 1px solid #c7c7c7;
+    border-radius: 10px;
+    box-sizing: border-box;
+    cursor: pointer;
+    transition: 0.2s linear;
+    font-size: 14px;
+    color: #605d5d;
+    opacity: 0.8;
+}
+
+.header-category .right a:hover {
+    opacity: 1;
+    background-color: rgba(220, 220, 220, 0.91);
+}
+
+/*轮播图*/
+
+
+/*内容区*/
+.title {
+    display: block;
+    width: 180px;
+    text-align: left;
+    font-size: 50px;
+    margin-top: 30px;
+}
+
+.content {
+    margin-top: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 260px);
+    flex-wrap: wrap;
+    justify-content: space-between;
+    grid-gap: 10px 10px;
+}
+
+.content .card-item {
+    background: white;
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.content .card-item:hover {
+    box-shadow: 0 0 10px gray;
+    transition: 0.1s linear;
+}
+
+.content .card-content {
+    height: 150px;
+    width: 260px;
+}
+
+.content .card-content > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.content .card-footer {
+    height: 50px;
+    line-height: 50px;
+    font-size: 18px;
+}
+
+/* 推荐动漫弹窗 */
+.card-item[data-tip] {
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border-radius: 10px;
+    font-size: 20px;
+}
+
+/* 提示框覆盖样式 */
+.card-item[data-tip]::after {
+    content: attr(data-tip);
+    position: absolute;
+
+    font-size: 15px;
+
+    /* 覆盖定位 */
+    left: 50%;
+    top: 0;    /* 显示在元素上方 */
+
+    /* 尺寸样式 */
+    width: 230px;
+    max-height: 180px;
+    background: rgba(0, 0, 0, 0.7);
+    color: #fff;
+    padding: 12px;
+    border-radius: 4px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-sizing: border-box;
+
+    /* 居中定位 */
+    transform: translateX(-50%);
+
+    /* 初始状态 */
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    z-index: 1000;
+
+    /* 文字排版 */
+    line-height: 1.2;
+    white-space: normal;
+    overflow: hidden;
+}
+
+/* 悬停状态 */
+.card-item[data-tip]:hover::after {
+    opacity: 1;
+    visibility: visible;
+}

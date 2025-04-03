@@ -1,0 +1,236 @@
+/*用户信息===============================================================================*/
+.user-info {
+    display: flex;
+    height: 200px;
+    gap: 35px;
+    margin-top: 20px;
+    padding: 20px;
+    background: white;
+}
+.user-info .avatar {
+    width: 200px;
+    height: 200px;
+    flex-shrink: 0;
+}
+.user-info .avatar img{
+    width: 100%;
+    height: 100%;
+    border-radius: 100px;
+    object-fit: cover;
+}
+.user-info .name {
+    font-size: 30px;
+    font-weight: bold;
+    color: hotpink;
+}
+/*我的收藏==============================================================================*/
+.collect .content {
+    margin-top: 10px;
+    padding: 10px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 260px);
+    flex-wrap: wrap;
+    justify-content: space-between;
+    grid-gap: 10px 10px;
+}
+
+.collect .content .card-item {
+    position: relative;
+    background: white;
+}
+.collect .content .card-item:hover {
+    box-shadow: 0 0 10px gray;
+    transition: 0.1s linear;
+}
+.collect .content .card-item .del{
+    position: absolute;
+    top: 5px;
+    right: 10px;
+    background-color: rgba(255,255,255,0.5);
+    /*收藏删除*/
+}
+
+.collect .content .card-content {
+    height: 150px;
+    width: 260px;
+}
+
+.collect .content .card-content > img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+}
+
+.collect .content .card-footer {
+    height: 50px;
+    line-height: 50px;
+    font-size: 20px;
+}
+
+
+/*我的文章==============================================================================*/
+.article {
+    margin-top: 20px;
+    background: white;
+    padding: 20px;
+    /*box-shadow: 0 0 5px gray;*/
+}
+.article .author {
+    display: flex;
+    gap: 15px;
+}
+
+.article .author .avatar {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+.article .avatar img {
+    width: 100%;
+    height: 60px;
+    border-radius: 30px;
+    object-fit: cover;
+}
+.article .author .author-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.article .name {
+    font-weight: bold;
+    color: hotpink;
+    text-align: left;
+    font-size: 24px;
+}
+.article .time {
+    font-size: 13px;
+    text-align: left;
+    vertical-align: bottom;
+    color: #575757;
+}
+.article .content {
+    padding: 0 20px 0 75px;
+    /*解决文字没占满一行就换行*/
+}
+.article .footer-bar {
+    position: relative;
+    padding-top: 10px;
+    width: 100%;
+    display: flex;
+    gap: 15px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.like {
+    display: flex;
+    align-items: center;
+}
+.like-num {
+    font-size: 15px;
+    color: #838383;
+}
+.footer-bar button {
+    background: none;
+    border: none;
+    padding: 0;
+}
+
+
+/*评论*/
+.player-list-title {
+    font-size: 25px;
+    text-align: left;
+}
+.player-list-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+.player-comment {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.player-comment-info {
+    text-align: left;
+    padding: 15px;
+}
+.player-comment .main {
+}
+.player-comment .user {
+    display: flex;
+    gap: 15px;
+}
+.player-comment .avatar {
+    width: 60px;
+    height: 60px;
+    flex-shrink: 0;
+}
+.player-comment .avatar img {
+    width: 100%;
+    height: 60px;
+    border-radius: 30px;
+    object-fit: cover;
+}
+.player-comment .main {
+    font-size: 18px;
+}
+.player-comment .main .name{
+    font-weight: bold;
+    color: hotpink;
+}
+.player-comment .main .content {
+    padding: 5px 0;
+}
+.player-comment .main .footer {
+    display: flex;
+    gap: 15px;
+}
+
+
+/*内容展示优化*/
+.content {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+    overflow: hidden;
+}
+
+.expand-btn {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    background: linear-gradient(to right, rgba(255,255,255,0) 0%, #fff 50%);
+    padding-left: 75px;
+    font-size: 20px;
+    cursor: pointer;
+    color: #409eff;
+}
+
+/*我的活动===================================================================================================*/
+.activity-card{
+    margin: 10px 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 470px);
+    gap: 25px;
+    justify-content: space-between;
+    text-align: left;
+}
+
+.activity-card .card-item .title {
+    width: 100%;
+    font-size: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.activity-card .card-item .content,
+.activity-card .card-item .footer{
+    font-size: 20px;
+    margin-bottom: 10px;
+}

@@ -1,0 +1,136 @@
+.goods-card {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 350px);
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 20px 0;
+    margin: 15px 0;
+}
+.goods-card {
+    text-align: left;
+}
+.goods-card .goods-item {
+    display: flex;
+}
+.goods-card .goods-item img {
+    height: 300px;
+    width: 100%;
+    object-fit: contain;
+    text-align: center;
+}
+.goods-card .good-name{
+    font-weight: bolder;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.goods-card .good-price {
+    font-weight: bolder;
+    color: hotpink;
+}
+.goods-card .good-price::before {
+    content: '￥';
+    font-size: 18px;
+}
+
+/*订单*/
+.order {
+    position: fixed;
+    bottom: 300px;
+    right: 100px;
+}
+.order-item .status {
+    align-self: center;
+}
+/*购物车*/
+.cart {
+    position: fixed;
+    bottom: 200px;
+    right: 100px;
+}
+.cart .el-button .el-tooltip__trigger{
+    border-radius: 20px;
+}
+.order-item,
+.goods-item {
+    display: flex;
+    text-align: left;
+    border-bottom: 1px solid #c4c4c4;
+    margin-bottom: 5px;
+    gap: 0 15px;
+    justify-content: space-between;
+}
+.order-item .picture img,
+.goods-item .picture img{
+    display: block;
+    height: 80px;
+    width: 80px;
+    margin-bottom: 5px;
+}
+.order-item .info,
+.goods-item .info {
+    color: black;
+}
+.order-item .info > div,
+.goods-item .info > div {
+    width: 150px;
+    margin-bottom: 5px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.goods-item .info .el-input-number{
+    width: 100px;
+}
+.goods-item .delete {
+    display: block;
+    width: 60px;
+    height: 30px;
+    align-self: end;
+    border: none;
+    border-radius: 5px;
+    margin-bottom: 5px;
+}
+.cart-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.cart-footer .total {
+    font-size: 20px;
+    color: hotpink;
+}
+.cart-footer .total::after {
+    content: '￥';
+    color: hotpink;
+}
+.order-item .button,
+.goods-item .button {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+}
+
+.order-item .button .buy,
+.goods-item .button .buy {
+    width: 60px;
+    display: block;
+    font-size: 20px;
+    color: white;
+    background: hotpink;
+    border: none;
+    border-radius: 5px;
+    margin-left: 10px;
+    user-select: none;
+}
+
+.order-item .delete,
+.goods-item .button .delete {
+    margin-left: 10px;
+    width: 60px;
+    border: none;
+    border-radius: 5px;
+    font-size: 20px;
+    align-self: end;
+}
