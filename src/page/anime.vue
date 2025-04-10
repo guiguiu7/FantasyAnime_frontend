@@ -19,7 +19,7 @@ export default {
 
 <template>
   <div class="content">
-    <ul type="none">
+    <ul type="none" v-if="props.animeInfo">
       <li v-for="o in props.animeInfo" :key="o.id">
         <div class="anime" @click="toPlayer(o.id)">
           <img :src="o.url" alt="">

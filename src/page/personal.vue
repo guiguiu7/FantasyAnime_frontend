@@ -1,17 +1,23 @@
 <script setup lang="ts">
-import {onMounted, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {Article, AnimeInfo, Activity} from "../interface/interface.ts";
 import axios from "axios";
 import {useMainStore} from "../store";
-import {ElMessage, ElMessageBox, TabsPaneContext} from "element-plus";
+import {
+  ElMessage,
+  ElMessageBox, FormInstance, FormRules,
+  TabsPaneContext, UploadFile,
+} from "element-plus";
 import {useRouter} from "vue-router";
+import {GENDER_MAP} from "../interface/userInterface.ts";
+import {Delete} from "@element-plus/icons-vue";
 
 onMounted(() => {
   getCollectInfo()
 })
 
 const userStore = useMainStore()
-const userInfo = userStore.userInfo
+const userInfo = computed(() => userStore.userInfo)
 const animeInfos = ref<AnimeInfo[]>()
 const activeTab = ref('collect');
 
@@ -38,13 +44,13 @@ function toPlayer(id:string) {
 }
 const getCollectInfo = () => {
   loading.value = true
-  axios.get(`/user/collect/${userInfo.id}`, {requiresAuth: true}).then(({data}) => {
+  axios.get(`/user/collect/${userInfo.value.id}`, {requiresAuth: true}).then(({data}) => {
     animeInfos.value = data.data
     loading.value = false
   })
 }
 const delCollectAnime = (animeId: string) => {
-  axios.post("/user/delCollectAnime", {animeId: animeId, userId: userInfo.id},{requiresAuth: true}).then(({data}) => {
+  axios.post("/user/delCollectAnime", {animeId: animeId, userId: userInfo.value.id},{requiresAuth: true}).then(({data}) => {
     if (data.code == 0) {
       ElMessage.success("删除收藏成功")
     } else {
@@ -59,7 +65,7 @@ const articles = ref<Article[]>()
 
 const getCommunityArticles = () => {
   loading.value = true
-  axios.get(`/user/article/${userInfo.id}`,{requiresAuth: true}).then(({data}) => {
+  axios.get(`/user/article/${userInfo.value.id}`,{requiresAuth: true}).then(({data}) => {
     articles.value = data.data
     loading.value = false
   })
@@ -77,11 +83,11 @@ const showComment = (o: Article) => {
 //删除文章
 const delArticle = (articleId: string) => {
   ElMessageBox.confirm('确定要删除文章吗?', '提示', {
-    confirmButtonText: 'OK',
-    cancelButtonText: 'Cancel',
+    confirmButtonText: '确定',
+    cancelButtonText: '取消',
     type: 'warning',
   }).then(() => {
-        axios.post("/user/delArticle", {articleId: articleId, userId: userInfo.id},{requiresAuth: true}).then(({data}) => {
+        axios.post("/user/delArticle", {articleId: articleId, userId: userInfo.value.id},{requiresAuth: true}).then(({data}) => {
           if (data.code == 0) {
             ElMessage.success("删除文章成功")
           } else {
@@ -103,10 +109,136 @@ function toActivityDetail(id: string) {
 
 const getActivities = () => {
   loading.value = true
-  axios.get(`/user/activity/${userInfo.id}`,{requiresAuth: true}).then(({data}) => {
+  axios.get(`/user/activity/${userInfo.value.id}`,{requiresAuth: true}).then(({data}) => {
     activities.value = data.data
     loading.value = false
   })
+}
+
+// 修改个人信息
+const dialogFormVisible = ref(false)
+const modifyUserInfo = ref({email: "", gender: 2, headUrl: "", id: "", realName: "", username: ""})
+const rules = reactive<FormRules>({
+  username:[
+    {required: true, message: '请输入用户名', trigger: 'blur'},
+    { min: 3, max: 16, message: '长度在 3 到 16 个字符', trigger: 'blur' }
+  ],
+  headUrl:[
+    {required: true, message: '请上传头像', trigger: 'blur'}
+  ],
+  gender: [
+    {required: true, message: '请选择性别', trigger: 'blur'}
+  ],
+  email: [
+    {required: true, message: '请输入邮箱', trigger: 'blur'},
+    {type: 'email', message: '邮箱格式不正确', trigger: ['blur', 'change']}
+  ],
+  realName: [
+    {required: false, message: '请输入真实姓名', trigger: 'blur'},
+    { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' }
+  ]
+})
+
+// 初始化弹窗
+const openDialog = () => {
+  dialogFormVisible.value = true
+  modifyUserInfo.value = {
+    ...userInfo.value,
+    gender: convertGenderToNumber(userInfo.value.gender)
+  };
+}
+// 性别类型转换
+const convertGenderToNumber = (gender: string): number => {
+  switch (gender) {
+    case '男':
+      return 0;
+    case '女':
+      return 1;
+    default:
+      return 2;
+  }
+}
+
+// 表单提交
+const formRef = ref<FormInstance>()
+const setUserInfo = async () => {
+  if (!formRef.value) return
+
+  try {
+    await formRef.value.validate()
+
+    const response = ref()
+    const formData = new FormData()
+    formData.append('userInfo', JSON.stringify(modifyUserInfo.value))
+
+    // 当前没有选择文件时，使用默认头像
+    if (!currentFile.value) {
+      const url = modifyUserInfo.value.headUrl.split('/fantasy-anime')[1]
+      formData.append('headUrl', url)
+      const {data} = await axios.post(`/user/updateUserInfo`, formData, {requiresAuth: true})
+      response.value = data
+    }else {
+      // 上传头像
+      formData.append('file', currentFile.value)
+      const {data} = await axios.post('/user/updateUserInfo', formData, {requiresAuth: true})
+      response.value = data
+    }
+    if (response.value.code == 0) {
+      ElMessage.success('修改成功')
+      modifyUserInfo.value = response.value.data
+      // 创建中间变量格式化性别字段
+      const tempInfo = {
+        ...response.value.data,
+        gender: GENDER_MAP[response.value.data.gender]
+      }
+      userStore.setUserInfo(tempInfo)
+      dialogFormVisible.value = false
+    } else {
+      ElMessage.error('修改失败')
+    }
+  } catch (error) {
+    ElMessage.error('提交失败，请检查输入')
+  }
+}
+// 文件状态管理
+const currentFile = ref<File | null>(null)
+
+// 文件选择处理（自动覆盖旧文件）
+const previewFile = ref('')
+const handleFileChange = (file: UploadFile) => {
+  const rawFile = file.raw
+  if (rawFile == undefined) {
+    ElMessage.error('头像不能为空!')
+    return false
+  }
+  if (!['image/jpeg', 'image/png', 'image/gif'].includes(rawFile.type)) {
+    ElMessage.error('头像必须是 JPG/PNG/GIF 格式!')
+    return false
+  }
+  if (rawFile.size / 1024 / 1024 > 5) {
+    ElMessage.error('头像大小不能超过 5MB!')
+    return false
+  }
+  currentFile.value = file.raw!
+  if (previewFile.value){
+    URL.revokeObjectURL(previewFile.value)
+  }
+  modifyUserInfo.value.headUrl = currentFile.value
+  previewFile.value = URL.createObjectURL(file.raw!)
+}
+// 超出文件限制提示
+const handleExceed = () => {
+  ElMessage.warning('每次只能上传一个头像')
+}
+
+// 删除头像
+const uploadRef = ref<any>()
+const delAvatar = () => {
+  currentFile.value = null
+  previewFile.value = null
+  modifyUserInfo.value.headUrl = ''
+  uploadRef.value?.clearFiles()
+  ElMessage.success('删除成功')
 }
 
 </script>
@@ -122,7 +254,20 @@ export default {
       <div class="avatar">
         <img :src="userInfo.headUrl || '/img.jpg'" alt="头像">
       </div>
-      <div class="name">{{ userInfo.username }}</div>
+      <div class="info">
+        <div class="name">
+          {{ userInfo.username }}
+        </div>
+        <div class="gender">
+          {{ userInfo.gender || '保密' }}
+        </div>
+        <div class="email">
+          {{ userInfo.email }}
+        </div>
+      </div>
+      <div class="operate">
+        <button @click="openDialog()">修改信息</button>
+      </div>
     </div>
     <el-tabs :tab-position="'top'" @tabClick="handleTabClick" v-model="activeTab">
       <el-tab-pane label="收藏" name="collect">
@@ -143,8 +288,8 @@ export default {
           </div>
         </div>
       </el-tab-pane>
-      <el-tab-pane label="文章" name="article">
-        <el-empty description="暂无文章" v-if="!articles" v-loading="loading"/>
+      <el-tab-pane label="社区" name="article">
+        <el-empty description="暂无发表" v-if="!articles" v-loading="loading"/>
         <div v-if="articles">
           <div class="article" v-for="o in articles" :key="o.id">
             <div class="author">
@@ -233,7 +378,7 @@ export default {
         <el-empty description="暂无活动" v-if="!activities" v-loading="loading"/>
         <div class="activity-card" v-if="activities">
           <a class="card-item" v-for="o in activities" :key="o.id" @click="toActivityDetail(o.id)">
-            <el-card shadow="hover" style="max-width: 500px">
+            <el-card shadow="hover" style="max-width: 500px; border-radius: 10px">
               <div class="title">{{ o.name }}</div>
               <div class="content">时间: {{ o.startTime }} 至 {{ o.endTime }}</div>
               <div class="footer">参与人数: {{ o.number }}</div>
@@ -243,6 +388,63 @@ export default {
       </el-tab-pane>
     </el-tabs>
   </div>
+
+<!--  修改个人信息-->
+  <el-dialog v-model="dialogFormVisible" title="修改信息">
+    <el-form :model="modifyUserInfo" :rules="rules" ref="formRef" label-width="100px">
+      <!-- 头像上传 -->
+      <el-form-item label="头像" prop="headUrl">
+        <el-upload
+            ref="uploadRef"
+            class="avatar-uploader"
+            :auto-upload="false"
+            :show-file-list="false"
+            :limit="1"
+            :on-exceed="handleExceed"
+            :on-change="handleFileChange"
+        >
+          <img v-if="previewFile" :src="previewFile" class="avatar-image"/>
+          <img v-else-if="modifyUserInfo.headUrl" :src="modifyUserInfo.headUrl" class="avatar-image"/>
+          <el-icon class="avatar-uploader-icon"><Plus /></el-icon>
+        </el-upload>
+        <el-icon v-if="previewFile || modifyUserInfo.headUrl" class="delete" size="35" @click="delAvatar">
+          <Delete />
+        </el-icon>
+      </el-form-item>
+
+      <!-- 用户名 -->
+      <el-form-item label="用户名" prop="username">
+        <el-input v-model="modifyUserInfo.username" />
+      </el-form-item>
+
+      <!-- 真实姓名 -->
+      <el-form-item label="真实姓名" prop="realName">
+        <el-input v-model="modifyUserInfo.realName" />
+      </el-form-item>
+
+      <!-- 邮箱 -->
+      <el-form-item label="邮箱" prop="email">
+        <el-input v-model="modifyUserInfo.email" type="email" />
+      </el-form-item>
+
+      <!-- 性别 -->
+      <el-form-item label="性别" prop="gender">
+        <el-radio-group v-model="modifyUserInfo.gender">
+          <el-radio :value="0">男</el-radio>
+          <el-radio :value="1">女</el-radio>
+          <el-radio :value="2">保密</el-radio>
+        </el-radio-group>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">Cancel</el-button>
+        <el-button type="primary" @click="setUserInfo()">
+          OK
+        </el-button>
+      </div>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>
@@ -253,5 +455,8 @@ export default {
 }
 :deep(.el-tabs__item) {
   width: 300px;
+}
+.container > :deep(.el-dialog) {
+  width: 600px;
 }
 </style>

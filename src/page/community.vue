@@ -9,9 +9,6 @@ import {Article} from "../interface/interface.ts";
 import {useMainStore} from "../store";
 // import {Toolbar} from "@wangeditor/editor-for-vue";
 
-const editor = useTemplateRef<any>("editor")
-const uploadUrl = "http://127.0.0.1:9999/api/community/upload"
-
 const userStore = useMainStore()
 const userInfo = userStore.userInfo
 
@@ -26,6 +23,8 @@ onMounted(() => {
 })
 
 // 发布文章
+const editor = useTemplateRef<any>("editor")
+const uploadUrl = "https://anime-api.gwynliu.top/api/community/upload"
 function pubArticle() {
   if (userInfo.id){
     text = editor.value.valueHtml
@@ -39,32 +38,27 @@ function pubArticle() {
       })
     }else {
       ElMessageBox.confirm('确定要发布文章吗?', "Tip", {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning',
       })
           .then(() => {
-            axios.post("/community/publish", {userId: userInfo.id, content: text},{requiresAuth: true}).then(({data}) => {
+            axios.post("/community/publish",
+                {userId: userInfo.id, content: text},
+                {requiresAuth: true}).then(({data}) => {
               if (data.code == 0){
-                ElMessage({
-                  type: "success",
-                  message: data.data
-                })
+                ElMessage({type: "success", message: data.data})
                 editor.value.valueHtml = ''
                 visible.value = !visible.value
                 getCommunityArticles()
               }else {
-                ElMessage({
-                  type: "error",
-                  message: data.msg
-                })
+                ElMessage({type: "error", message: data.msg})
                 editor.value.valueHtml = ''
                 visible.value = !visible.value
               }
             })
           })
           .catch((res) => {
-            // catch error
             ElMessage.error(res.data)
           })
     }
@@ -208,10 +202,10 @@ export default {
               评论
             </div>
           </template>
-          <div class="player-comment">
+          <div class="player-comment" v-if="o.replyComment">
             <div class="publish-comment">
               <div class="avatar">
-                <img :src="o.userAvatar||'/img.jpg'" alt="">
+                <img :src="userInfo.headUrl ||'/img.jpg'" alt="">
               </div>
               <textarea class="input" rows="2" placeholder="请输入内容。。。" v-model="o.replyValue"></textarea>
               <button @click="reply(o)">发送</button>

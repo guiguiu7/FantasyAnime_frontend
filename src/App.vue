@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 
 import {useRouter} from "vue-router";
-import {onMounted, reactive, ref} from "vue";
+import {computed, onMounted, reactive, ref} from "vue";
 import {GENDER_MAP, LoginInfo} from "./interface/userInterface.ts";
 import {ElMessage, FormInstance, FormRules} from "element-plus";
 import axios from "axios";
 import {useMainStore} from "./store";
 import {getUuid} from "./util/utils.ts";
+import Vcode from "vue3-puzzle-vcode";
 
 onMounted(() => {
   word.value = ''
@@ -15,16 +16,16 @@ onMounted(() => {
 })
 
 const userStore = useMainStore()
-const userInfo = userStore.userInfo
+const userInfo = computed(() => userStore.userInfo)
 let word = ref();
 
 const loginPop = useMainStore().loginPop
 
 const router = useRouter()
-
 function toSearch() {
   if (word.value.trim()) {
     router.push({path: '/search/word', query: {word: word.value.trim()}})
+    word.value = ''
   }
 }
 
@@ -47,12 +48,20 @@ const loginOut = () => {
 }
 
 const ruleFormRef = ref<FormInstance>()
-const loginInfo = ref<LoginInfo>({operation: "",verCode: "",uuid: "",captcha: "", email: "", password: "", username: ""})
+const loginInfo = ref<LoginInfo>({
+  operation: "",
+  verCode: "",
+  uuid: "",
+  captcha: "",
+  email: "",
+  password: "",
+  username: ""
+})
 
 const rules = reactive<FormRules<LoginInfo>>({
   username: [
     {required: true, message: '请输入用户名', trigger: 'blur'},
-    {min: 3, max: 16, message: '长度在3到5个字符', trigger: 'blur'},
+    {min: 3, max: 16, message: '长度在3到16个字符', trigger: 'blur'},
   ],
   password: [
     {required: true, message: '请输入密码', trigger: 'blur'},
@@ -62,7 +71,7 @@ const rules = reactive<FormRules<LoginInfo>>({
     {required: true, message: '请输入邮箱', trigger: 'blur'},
     {type: "email", message: '请输入正确邮箱格式', trigger: 'blur'}
   ],
-  captcha:[
+  captcha: [
     {required: true, message: '请输入验证码', trigger: 'blur'}
   ],
   verCode: [
@@ -70,23 +79,60 @@ const rules = reactive<FormRules<LoginInfo>>({
   ]
 })
 
-// 验证码倒计时简单实现
-let countdown = 60; // 倒计时秒数
-let timer: NodeJS.Timeout;
+// 关闭弹窗
+const handleClose = () => {
+  userStore.handleClose()
+  loginInfo.value.verCode = ''
+  loginInfo.value.email = ''
+  loginInfo.value.password = ''
+  loginInfo.value.username = ''
+  loginInfo.value.captcha = ''
+}
 
-// 启动倒计时
-function startCountdown(operation: string) {
+// 跳转注册
+const toRegister = () => {
+  loginPop.isLogin = !loginPop.isLogin
+  loginInfo.value.username = ''
+  loginInfo.value.password = ''
+}
+
+// 人机验证
+const isVerify = ref(false)
+const toVerify = async (operation: string) => {
+  if (!loginInfo.value.username && operation == 'register') {
+    ElMessage.warning("请输入用户名")
+    return
+  }
+  if (!loginInfo.value.password) {
+    ElMessage.warning("请输入密码")
+    return
+  }
   if (!loginInfo.value.email) {
     ElMessage.warning("请输入邮箱")
     return
   }
-  countdown = 60;
-
-  // 发送验证码
+  isVerify.value = true
   loginInfo.value.operation = operation
+}
+const onSuccess = () => {
+  isVerify.value = false
+  startCountdown()
+}
+const onClose = () => {
+  isVerify.value = false
+}
+
+// 验证码倒计时实现
+let countdown = 60; // 倒计时秒数
+let timer: NodeJS.Timeout;
+
+// 启动倒计时
+function startCountdown() {
+  // 发送验证码
   sendVerifyCode()
 
   // 更新按钮状态
+  countdown = 60;
   const button = document.getElementById('sendBtn') as HTMLButtonElement;
   button.disabled = true;
   button.textContent = `${countdown}秒后重试`;
@@ -153,14 +199,15 @@ const getUserInfo = () => {
 // 忘记密码
 const forgetPassword = () => {
   loginPop.isForget = true
+  loginInfo.value.password = ''
 }
 
 // 验证用户名是否可用
 const verifyName = () => {
   axios.post("/user/verifyName", {userName: loginInfo.value.username}).then(({data}) => {
-    if (data.code == 0){
+    if (data.code == 0) {
       ElMessage.success(data.data);
-    }else {
+    } else {
       ElMessage.warning(data.msg);
     }
   })
@@ -170,12 +217,12 @@ const verifyName = () => {
 const sendVerifyCode = () => {
   axios.get(`/user/register/sendEmail?email=${loginInfo.value.email}&operation=${loginInfo.value.operation}`)
       .then(({data}) => {
-    if (data.code == 0){
-      ElMessage.success(data.data);
-    }else {
-      ElMessage.warning(data.msg);
-    }
-  })
+        if (data.code == 0) {
+          ElMessage.success(data.data);
+        } else {
+          ElMessage.warning(data.msg);
+        }
+      })
 }
 
 // 注册
@@ -189,12 +236,12 @@ const sign = async (formEl: FormInstance | undefined) => {
         email: loginInfo.value.email,
         verCode: loginInfo.value.verCode
       }).then(({data}) => {
-        if (data.code == 0){
+        if (data.code == 0) {
           ElMessage.success(data.data);
           loginPop.isLogin = true
           loginInfo.value.verCode = ''
           loginInfo.value.email = ''
-        }else {
+        } else {
           ElMessage.warning(data.msg);
         }
       })
@@ -214,13 +261,13 @@ const changePassword = async (formEl: FormInstance | undefined) => {
         password: loginInfo.value.password,
         verCode: loginInfo.value.verCode
       }).then(({data}) => {
-        if (data.code == 0){
+        if (data.code == 0) {
           ElMessage.success(data.data);
           loginPop.isForget = false
           loginInfo.value.verCode = ''
           loginInfo.value.email = ''
           loginInfo.value.password = ''
-        }else {
+        } else {
           ElMessage.warning(data.msg);
         }
       })
@@ -234,7 +281,7 @@ const changePassword = async (formEl: FormInstance | undefined) => {
 let noticeInfo = reactive([{id: '', info: ''}])
 const notice = () => {
   axios.get("/home/notice").then(({data}) => {
-    if (data.code == 0){
+    if (data.code == 0) {
       noticeInfo = data.data
     }
   })
@@ -301,15 +348,15 @@ const notice = () => {
             <template #default>
               <div class="notice">
                 <div class="notice-item" v-for="o in noticeInfo" :key="o.id">
-                  {{o.info}}
+                  {{ o.info }}
                 </div>
               </div>
             </template>
           </el-popover>
 
-<!--          <a href="#" class="icon msg">-->
-<!--            <Message/>-->
-<!--            <span>消息</span></a>-->
+          <!--          <a href="#" class="icon msg">-->
+          <!--            <Message/>-->
+          <!--            <span>消息</span></a>-->
         </div>
       </div>
     </div>
@@ -320,7 +367,7 @@ const notice = () => {
     <div class="overlay" v-show="loginPop.toLogin">
       <div class="login-pop">
         <div class="title">欢迎来到Fantasy动漫社区</div>
-        <div class="close" @click="userStore.handleClose()"></div>
+        <div class="close" @click="handleClose()"></div>
         <template v-if="loginPop.isLogin">
           <el-form
               ref="ruleFormRef"
@@ -337,20 +384,21 @@ const notice = () => {
             </el-form-item>
             <el-form-item label="验证码" prop="captcha" style="display: flex; margin-bottom: 0;">
               <el-input type="text" v-model="loginInfo.captcha" style="width: 50%"/>
-              <img style="vertical-align: middle; height: 40px; cursor: pointer; width: 50%" :src="captchaUrl" @click="getCaptchaUrl()" alt="" />
+              <img style="vertical-align: middle; height: 40px; cursor: pointer; width: 50%" :src="captchaUrl"
+                   @click="getCaptchaUrl()" alt=""/>
             </el-form-item>
             <div class="forget" @click="forgetPassword()">
               忘记密码
             </div>
             <div class="operate" style="margin-top: 15px;">
-              <button class="sign" @click.prevent="loginPop.isLogin = !loginPop.isLogin">注册</button>
+              <button class="sign" @click.prevent="toRegister()">注册</button>
               <button class="login" @click.prevent="login(ruleFormRef)">登录</button>
             </div>
           </el-form>
         </template>
         <template v-else>
           <el-form ref="ruleFormRef" :model="loginInfo" label-width="auto" style="margin: 0 100px;" :rules="rules">
-            <el-form-item label="用户名" prop="userName">
+            <el-form-item label="用户名" prop="username">
               <el-input v-model="loginInfo.username">
                 <template #append>
                   <el-button @click="verifyName()">
@@ -368,7 +416,7 @@ const notice = () => {
             <el-form-item label="验证码" prop="verCode">
               <el-input type="text" v-model="loginInfo.verCode">
                 <template #append>
-                  <el-button id="sendBtn" @click="startCountdown('register')">发送验证码</el-button>
+                  <el-button id="sendBtn" @click="toVerify('register')">发送验证码</el-button>
                 </template>
               </el-input>
             </el-form-item>
@@ -386,15 +434,15 @@ const notice = () => {
             <el-form-item label="邮箱" prop="email">
               <el-input type="email" v-model="loginInfo.email"/>
             </el-form-item>
+            <el-form-item label="新密码" prop="password">
+              <el-input type="password" v-model="loginInfo.password"/>
+            </el-form-item>
             <el-form-item label="验证码" prop="verCode">
               <el-input type="text" v-model="loginInfo.verCode">
                 <template #append>
-                  <el-button id="sendBtn" @click="startCountdown('forget')">发送验证码</el-button>
+                  <el-button id="sendBtn" @click="toVerify('forget')">发送验证码</el-button>
                 </template>
               </el-input>
-            </el-form-item>
-            <el-form-item label="新密码" prop="password">
-              <el-input type="password" v-model="loginInfo.password"/>
             </el-form-item>
             <div class="operate">
               <button class="sign-login" @click.prevent="changePassword(ruleFormRef)">修改</button>
@@ -404,12 +452,19 @@ const notice = () => {
       </div>
     </div>
   </div>
+  <!--          人机验证-->
+  <Vcode :show="isVerify" @success="onSuccess()" @close="onClose()"/>
   <el-backtop :right="100" :bottom="100"/>
 </template>
 
 <style scoped>
 @import "./style.css";
+
 .login-pop :deep(.el-form .el-form-item:last-child) {
   margin-bottom: 0 !important;
+}
+
+:deep(.vue-puzzle-vcode) {
+  z-index: 1001;
 }
 </style>

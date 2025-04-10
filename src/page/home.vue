@@ -2,7 +2,7 @@
 import axios from "axios";
 import {onMounted, ref} from "vue";
 import "../interface/interface.ts"
-import {Anime, AnimeInfo, AnimeInfoProps, AnimeInfoVO, AnimeType, Banner} from "../interface/interface.ts";
+import {Anime, AnimeInfoProps, AnimeType, Banner} from "../interface/interface.ts";
 import {useRouter} from "vue-router";
 
 // 页面挂载时渲染
@@ -35,7 +35,6 @@ const getRecommend = () => {
 
 // 获取动漫信息
 let animeInfos = ref<Anime[]>()
-
 const getAnimeInfo = (): void => {
   axios.get('/home/animeInfo').then((res) => {
     const dataVo = () => {
@@ -62,7 +61,6 @@ let animeType = ref<AnimeType[]>([{
   id: '',
   name: ''
 }])
-
 const getAnimeType = (): void => {
   axios.get('/home/animeType').then((res) => {
     animeType.value = res.data
@@ -71,7 +69,6 @@ const getAnimeType = (): void => {
 
 // 点击类型跳转到搜索页面，搜索对应类型动漫
 const router = useRouter()
-
 function toSearchType(type: string) {
   router.push({path: '/search/type', query: {type}})
 }
@@ -95,7 +92,7 @@ export default {
         <el-icon size="35" color="gray">
           <Compass/>
         </el-icon>
-        <span>文章</span>
+        <span>社区</span>
       </a>
       <a href="/goods" target="_blank">
         <el-icon size="35" color="gray">

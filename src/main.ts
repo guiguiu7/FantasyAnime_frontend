@@ -3,7 +3,7 @@ import { createPinia } from "pinia";
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate';
 import './style.css'
 import App from './App.vue'
-import './axios/axios_config'
+import './axios/axios_config.ts'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import router from "./router/router.ts";

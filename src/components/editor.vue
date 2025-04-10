@@ -2,9 +2,10 @@
 import '@wangeditor/editor/dist/css/style.css' // 引入 css
 
 import {onBeforeUnmount, ref, shallowRef, onMounted} from 'vue'
-import {Editor, Toolbar} from '@wangeditor/editor-for-vue'
+import {Editor, Toolbar} from "@wangeditor/editor-for-vue"
 import {IToolbarConfig} from "@wangeditor/editor";
 import {IEditorConfig} from "@wangeditor/editor";
+import {useMainStore} from "../store";
 
 export default {
   components: {Editor, Toolbar},
@@ -42,6 +43,10 @@ export default {
           server: props.uploadUrl,
           // form-data fieldName ，默认值 'wangeditor-uploaded-image'
           fieldName: 'file',
+          meta: {
+            // 额外参数
+            token: useMainStore().token,
+          },
 
           // 单个文件的最大体积限制，默认为 2M
           maxFileSize: 5 * 1024 * 1024, // 5M

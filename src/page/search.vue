@@ -1,13 +1,14 @@
 <script setup lang="ts">
-import {useRoute, useRouter} from "vue-router";
+import {useRoute} from "vue-router";
 import Anime from "./anime.vue";
 import {onMounted, ref} from "vue";
 import {AnimeInfoProps} from "../interface/interface.ts";
 import axios from "axios";
+import {ElMessage} from "element-plus";
 
-const router = useRouter()
 const route = useRoute()
-
+let word = route.query.word
+let type = route.query.type
 onMounted(() => {
   if (word != null && word !== '') {
     getAnimeInfoByName()
@@ -17,14 +18,16 @@ onMounted(() => {
   }
 })
 
-let word = route.query.word
-let type = route.query.type
 
 let animeInfo = ref<AnimeInfoProps[]>([])
 function getAnimeInfoByName () {
-  axios.get(`/search/${word}`).then((res) => {
-    animeInfo.value = res.data
-    console.log(animeInfo.value)
+  axios.get(`/search`, {params: {word}}).then(({data}) => {
+    if (data.code == 0){
+      animeInfo.value = data.data
+    }else {
+      animeInfo.value = []
+      ElMessage.warning(data.msg)
+    }
   })
 }
 function getAnimeInfoByType () {

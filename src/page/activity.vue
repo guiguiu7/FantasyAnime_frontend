@@ -56,8 +56,8 @@ function pubActivity() {
       })
     } else {
       ElMessageBox.confirm('确定要发布活动吗?', "Tip", {
-        confirmButtonText: 'OK',
-        cancelButtonText: 'Cancel',
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
         type: 'warning',
       })
           .then(() => {
@@ -109,7 +109,7 @@ export default {
     <template v-if="!!activities">
       <div class="activity-card">
         <a class="card-item" v-for="o in activities" :key="o.id" @click="toDetail(o.id)">
-          <el-card shadow="hover" style="max-width: 500px">
+          <el-card shadow="hover" style="max-width: 500px; border-radius: 10px">
             <div class="title">{{ o.name }}</div>
             <div class="content">时间: {{ o.startTime }} 至 {{ o.endTime }}</div>
             <div class="footer">参与人数: {{ o.number }}</div>

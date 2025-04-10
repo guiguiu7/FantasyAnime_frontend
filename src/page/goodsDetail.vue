@@ -49,7 +49,6 @@ const toBuy = async (o: any): Promise<any> => {
     getGoodsDetail();
     return res.data; // 明确返回响应数据
   } catch (error) {
-    console.error('购买失败:', error);
     throw error; // 抛出错误以便外部捕获
   }
 }
@@ -79,27 +78,17 @@ const addCart = (id: string) => {
 
 const goToPay = async (id: string) => {
   try {
-    const params = {
-      id: id,
-      userId: userInfo.id
-    }
-
+    const params = {id: id, userId: userInfo.id}
     const res = await toBuy(params)
     if (!res) {
       ElMessage.error('购买失败')
     }
-
     if (res.code === 0) {
       window.open(
-          `http://localhost:8080/api/alipay/pay?subject=${res.data.name}&traceNo=${res.data.id}&totalAmount=${res.data.amount}`
+          `http://localhost:8080/api/alipay/pay?subject=${res.data.name}
+          &traceNo=${res.data.id}&totalAmount=${res.data.amount}`
       )
       ElMessage.success('付款成功')
-
-      // 如果 load 是加载数据的方法，需要定义或导入
-      // load()
-
-      // 如果需要路由跳转
-      // router.push('/some-path')
     } else {
       ElNotification({
         type: 'warning',

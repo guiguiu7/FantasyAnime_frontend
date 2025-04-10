@@ -14,8 +14,7 @@ export interface UserInfo {
     gender: string,
     headUrl: string,
     email: string,
-    realName: string,
-    token: string
+    realName: string
 }
 
 // 通用常量定义（如 constants.ts）

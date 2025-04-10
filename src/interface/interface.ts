@@ -43,6 +43,7 @@ export interface AnimePlayList {
     animeId: string,
     animeName: string,
     likes: number,
+    rating: number,
     isLike: boolean,
     isCollect: boolean,
     playList: PlayList[]

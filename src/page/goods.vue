@@ -48,6 +48,7 @@ const removeCart = (id: string) => {
         type: "success",
         message: "删除成功"
       })
+      getCartList()
     } else {
       ElNotification({
         type: "warning",
@@ -66,6 +67,7 @@ const removeOrder = (id: string) => {
         type: "success",
         message: "删除成功"
       })
+      getOrderList()
     }else {
       ElNotification({
         type: "warning",
@@ -94,18 +96,13 @@ const goToPay = async (id: string) => {
     if (!res) {
       ElMessage.error('购买失败')
     }
-
     if (res.code === 0) {
       window.open(
           `http://localhost:8080/api/alipay/pay?subject=${res.data.name}&traceNo=${res.data.id}&totalAmount=${res.data.amount}`
       )
       ElMessage.success('付款成功')
-
       // 如果 load 是加载数据的方法，需要定义或导入
       getOrderList()
-
-      // 如果需要路由跳转
-      // router.push('/some-path')
     } else {
       ElNotification({
         type: 'warning',

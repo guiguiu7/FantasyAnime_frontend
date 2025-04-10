@@ -11,13 +11,13 @@ const route = useRoute()
 const userStore = useMainStore()
 const userInfo = userStore.userInfo
 
-let rate = 0
 let id = route.query.id
 let currentNum = ref<number>(0)
 const animePlayList = ref<AnimePlayList>({
   animeId: '',
   animeName: '',
   likes: 0,
+  rating: 0,
   isLike: false,
   isCollect: false,
   playList: [{
@@ -40,6 +40,7 @@ function getPlayerInfo() {
   if (userInfo.id){
     axios.get(`/player/${id}/${userInfo.id}`,{requiresAuth: true}).then((res) => {
       animePlayList.value = res.data
+      rate.value = animePlayList.value.rating
       playList.value = animePlayList.value.playList
     })
   }else {
@@ -52,30 +53,47 @@ function getPlayerInfo() {
 
 async function like() {
     if (animePlayList.value.isLike) {
-      await axios.post(`/player/like/${id}?operate=-1&userId=${userInfo.id}`,{},{requiresAuth: true}).then((res) => {
+      await axios.post(`/player/like/${id}?operate=-1&userId=${userInfo.id}`
+          ,{},{requiresAuth: true}).then((res) => {
         animePlayList.value.isLike = res.data.isLike
-        console.log(res.data)
         animePlayList.value.likes = res.data.likes
       })
     } else {
-      await axios.post(`/player/like/${id}?operate=1&userId=${userInfo.id}`,{},{requiresAuth: true}).then((res) => {
+      await axios.post(`/player/like/${id}?operate=1&userId=${userInfo.id}`
+          ,{},{requiresAuth: true}).then((res) => {
         animePlayList.value.isLike = res.data.isLike
         animePlayList.value.likes = res.data.likes
       })
     }
-
 }
 
 async function collect() {
     if (animePlayList.value.isCollect){
-      await axios.post(`/player/collect/${id}?operate=-1&userId=${userInfo.id}`,{},{requiresAuth: true}).then((res) => {
+      await axios.post(`/player/collect/${id}?operate=-1&userId=${userInfo.id}`
+          ,{},{requiresAuth: true}).then((res) => {
         animePlayList.value.isCollect = res.data
       })
     }else {
-      await axios.post(`/player/collect/${id}?operate=1&userId=${userInfo.id}`,{},{requiresAuth: true}).then((res) => {
+      await axios.post(`/player/collect/${id}?operate=1&userId=${userInfo.id}`
+          ,{},{requiresAuth: true}).then((res) => {
         animePlayList.value.isCollect = res.data
       })
     }
+}
+
+let rate = ref(0)
+const rateChange = () => {
+  axios.post(`/player/rate`, {
+    animeId: id,
+    userId: userInfo.id,
+    rating: rate.value
+  }, {requiresAuth: true}).then(({data}) => {
+    if (data.code == 0) {
+      rate.value = data.data
+    } else {
+      ElMessage.warning(data.msg)
+    }
+  })
 }
 
 function playNum(num: number) {
@@ -137,7 +155,7 @@ export default {
         </el-icon>
       </div>
       <div style="">
-        <el-rate v-model="rate" size="large"/>
+        <el-rate @change="rateChange()" v-model="rate" size="large"/>
       </div>
     </div>
     <!--    选集-->
